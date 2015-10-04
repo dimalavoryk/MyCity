@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <Button
+        android:text="Повідомити про проблему"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/reportProblem" />
+    <Button
+        android:text="Завантажені фото"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadedPhotos" />
+    <Button
+        android:text="Переглянути відмітки на карті"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seeOnMap" />
+    <Button
+        android:text="Вирішені проблеми"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/solvedProblems" />
+</LinearLayout>

@@ -1,0 +1,5 @@
+MyCity.UITests/bin/
+MyCity.UITests/obj/
+MyCity/bin/
+MyCity/obj/
+*.userprefs
