@@ -1,8 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 using Android.App;
 using Android.Content;
@@ -21,8 +21,9 @@ namespace MyNewProject
 
 		protected override void OnCreate (Bundle bundle)
 		{
-			SetContentView (Resource.Layout.AddPhotos);
 			base.OnCreate (bundle);
+
+			SetContentView (Resource.Layout.AddPhotos);
 			takeAPhoto = FindViewById<Button> (Resource.Id.TakeAPhoto);
 			takeAPhoto.Click += TakeAPhoto_Click;;
 			uploadFromGallery = FindViewById<Button> (Resource.Id.uploadFromgGallery);
@@ -42,6 +43,13 @@ namespace MyNewProject
 			StartActivity (intent);
 			//			
 		}
+
+
+		public override void OnBackPressed()
+		{
+			
+		}
+
 
 	}
 }

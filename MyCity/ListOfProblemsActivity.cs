@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Android.Locations;
+using Android.Util;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -16,11 +18,12 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-
+using System.Xml.Serialization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyNewProject
 {
-
 	public class HomeScreenAdapter : BaseAdapter<string> {
 		string[] items;
 		Activity context;
@@ -66,10 +69,30 @@ namespace MyNewProject
 		{
 			var t = items [position];
 			Android.Widget.Toast.MakeText(this, t, Android.Widget.ToastLength.Short).Show();
-			Intent intent = new Intent (this, typeof(LoadPhotos));
+//			MainActivity.problems.AddProblems (t);
+//			MainActivity.listProblems.AddItem(t);
+
+			++MainActivity.index;
+
+			var dbPath = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),"m_Index.dat");
+			//запись в файл
+			BinaryWriter bw = new BinaryWriter(new FileStream(dbPath, FileMode.OpenOrCreate));
+			bw.Write(Convert.ToInt32(MainActivity.index));
+			bw.Close();
+
+
+			MainActivity.problems.Add (new Problems ());
+			MainActivity.problems [MainActivity.index].SetType (t);
+			MainActivity.problems [MainActivity.index].WriteType (t);
+
+			Intent intent = new Intent (this, typeof(UserLocation));
 			StartActivity (intent);
-//			Intent intent1 = new Intent (this, typeof(UploadFromGallery));
-//			StartActivity (intent1);
+		}
+
+		public override void OnBackPressed()
+		{
+			Intent intent = new Intent (this, typeof(MainActivity));
+			StartActivity (intent);
 		}
 	}
 }

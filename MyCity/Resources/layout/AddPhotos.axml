@@ -2,15 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:weightSum="100"
+    android:background="@android:color/background_light">
     <Button
         android:text="Сфотографувати"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TakeAPhoto" />
+        android:layout_height="0dp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonreportproblemstyle"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="18"
+        android:id="@+id/TakeAPhoto"
+        android:layout_margin="20dp" />
     <Button
         android:text="Завантажити фото з галереї"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/uploadFromgGallery" />
+        android:layout_height="0dp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonreportproblemstyle"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="18"
+        android:id="@+id/uploadFromgGallery"
+        android:layout_margin="20dp" />
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40"
+        android:id="@+id/relativeLayout1">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar1"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 </LinearLayout>

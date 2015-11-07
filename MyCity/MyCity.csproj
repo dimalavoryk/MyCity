@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -48,11 +48,14 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ListOfProblemsActivity.cs" />
-    <Compile Include="AddPhotos.cs" />
     <Compile Include="TakeAPhoto.cs" />
     <Compile Include="UploadFromGallery.cs" />
     <Compile Include="LoadPhotos.cs" />
-    <Compile Include="LoadedPhotos.cs" />
+    <Compile Include="UserLocation.cs" />
+    <Compile Include="SaveProblems.cs" />
+    <Compile Include="MyList.cs" />
+    <Compile Include="ExpandableScreenAdapter.cs" />
+    <Compile Include="OnLoadedPhotosClick.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -69,6 +72,10 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\layout\AddPhotos.axml" />
     <AndroidResource Include="Resources\layout\LoadedPhotos.axml" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ButtonReportProblemStyle.xml" />
+    <AndroidResource Include="Resources\layout\ExampleForGps.axml" />
+    <AndroidResource Include="Resources\layout\LoadedProblemsAndPhotos.axml" />
+    <AndroidResource Include="Resources\layout\OnLoadedPhotosClickScreen.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
 </Project>

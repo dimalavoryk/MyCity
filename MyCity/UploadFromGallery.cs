@@ -1,22 +1,39 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Android.App;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
+using Android.App;
 using Android.Content;
+using Android.Content.PM;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.OS;
+using Android.Provider;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Uri = Android.Net.Uri;
+using Android.Net;
+
+
+using Environment = Android.OS.Environment;
+
+//using Uri = Android.Net.Uri;
+using Java.IO;
 
 namespace MyNewProject
 {
 	[Activity (Label = "Завантажити з галереї")]			
 	public class UploadFromGallery : Activity
 	{
+		private void PickSelected (ImageView selectedPic)
+		{
+			
+		}
+
+
 
 		public static readonly int PickImageId = 1000;
 		private ImageView _imageView;
@@ -25,8 +42,22 @@ namespace MyNewProject
 		{
 			if ((requestCode == PickImageId) && (resultCode == Result.Ok) && (data != null)) 
 			{
-				Uri uri = data.Data;
-				_imageView.SetImageURI (uri);
+		//		Stream stream = ContentResolver.OpenInputStream (data);
+	//			Uri uri = data.Data;
+	//			_imageView.SetImageURI (uri);
+				Stream stream = ContentResolver.OpenInputStream(data.Data);
+		
+
+				_imageView.SetImageBitmap (DecodeBitmapFromStream (data.Data, 150, 150));
+			//	Bitmap bitmap = DecodeBitmapFromStream (data.Data, 150, 150);
+				Bitmap bitmap = BitmapFactory.DecodeStream (stream);
+
+				MainActivity.problems [MainActivity.index].ProblemsItems.SetImgBitmap (bitmap);
+
+				MainActivity.problems [MainActivity.index].ProblemsItems.ExportBitmapAsPNG ();
+
+
+				//Android.Net.Uri uri = new Android.Net.Uri ("../Application");
 			}
 		}
 		protected override void OnCreate (Bundle bundle)
@@ -38,20 +69,56 @@ namespace MyNewProject
 			Intent.SetType ("image/*");
 			Intent.SetAction (Intent.ActionGetContent);
 			StartActivityForResult (Intent.CreateChooser (Intent, "Оберіть фото"), PickImageId);
-			/*
-			Button uploadFromGallery = FindViewById<Button> (Resource.Id.uploadFromgGallery);
-			uploadFromGallery.Click += UploadFromGallery_Click;*/
+
+			
 
 			// Create your application here
 		}
-
-		/*void UploadFromGallery_Click (object sender, EventArgs e)
+		private Bitmap DecodeBitmapFromStream (Android.Net.Uri data, int requestedWidth, int requestedHeigth)
 		{
-			Intent = new Intent ();
-			Intent.SetType ("image/*");
-			Intent.SetAction (Intent.ActionGetContent);
-			StartActivityForResult (Intent.CreateChooser (Intent, "Оберіть фото"), PickImageId);
-		}*/
+			Stream stream = ContentResolver.OpenInputStream (data);	
+			BitmapFactory.Options options = new BitmapFactory.Options ();
+			options.InJustDecodeBounds = true;
+			BitmapFactory.DecodeStream (stream);
+
+			//  calculate InSampleSize
+			options.InSampleSize = CalculateInSampleSize (options, requestedWidth, requestedHeigth);
+
+			// Decode Bitmap with SimpleSize
+
+			stream = ContentResolver.OpenInputStream (data); // must read again
+			options.InJustDecodeBounds = false;
+			Bitmap bitmap = BitmapFactory.DecodeStream (stream, null, options);
+			return bitmap;
+
+		}
+
+
+		private int CalculateInSampleSize (BitmapFactory.Options options, int requestedWidth, int requestedHeigth)
+		{
+			int height = options.OutHeight;
+			int width = options.OutWidth;
+			int inSampleSize = 1;
+			if (height > requestedHeigth || width > requestedWidth) 
+			{
+				//the image is bigger than we want it to be
+				int halfHeigth = height / 2;
+				int halfWidth = width / 2;
+
+				while ((halfHeigth / inSampleSize) > requestedHeigth && (halfWidth / inSampleSize) > requestedWidth)
+				{
+					inSampleSize *= 2;
+				}
+			}
+
+			return inSampleSize;
+		}
+
+		public override void OnBackPressed()
+		{
+			Intent intent = new Intent (this, typeof(MainActivity));
+			StartActivity (intent);
+		}
 	}
 }
 

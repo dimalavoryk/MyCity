@@ -2,6 +2,8 @@
 {
 	using System;
 	using System.Collections.Generic;
+
+
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
@@ -13,6 +15,7 @@
 	using Java.IO;
 	using Environment = Android.OS.Environment;
 	using Uri = Android.Net.Uri;
+
 
 	public static class App 
 	{
@@ -38,15 +41,7 @@
 				((BitmapDrawable)toRecycle).Bitmap.Recycle ();
 			}
 		}
-
-
-		/// <summary>
-		/// Load the image from the device, and resize it to the specified dimensions.
-		/// </summary>
-		/// <returns>The and resize bitmap.</returns>
-		/// <param name="fileName">File name.</param>
-		/// <param name="width">Width.</param>
-		/// <param name="height">Height.</param>
+			
 		public static Bitmap LoadAndResizeBitmap(this string fileName, int width, int height)
 		{
 			// First we get the the dimensions of the file on disk
@@ -84,14 +79,13 @@
 	{
 		private ImageView _imageView;
 	//	private Button takeAPhoto;
-
+//		SaveBitmap img;
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
 
 			// Make it available in the gallery
-
 			Intent mediaScanIntent = new Intent(Intent.ActionMediaScannerScanFile);
 			Uri contentUri = Uri.FromFile(App._file);
 			mediaScanIntent.SetData(contentUri);
@@ -104,10 +98,21 @@
 			int height = Resources.DisplayMetrics.HeightPixels;
 			int width = _imageView.Height;
 			App.bitmap = App._file.Path.LoadAndResizeBitmap (width, height);
-			if (App.bitmap != null) {
+
+//			img.AddItem (App.bitmap);
+//			img.WriteList ("1");
+
+			if (App.bitmap != null) 
+			{
+				MainActivity.problems [MainActivity.index].ProblemsItems.SetImgBitmap (App.bitmap);
+				MainActivity.problems [MainActivity.index].ProblemsItems.ExportBitmapAsPNG ();
+
 				_imageView.SetImageBitmap (App.bitmap);
 				App.bitmap = null;
 			}
+
+
+
 
 			// Dispose of the Java side bitmap.
 			GC.Collect();
@@ -122,16 +127,12 @@
 				CreateDirectoryForPictures ();
 				_imageView = FindViewById<ImageView> (Resource.Id.imageView);
 				Intent intent = new Intent(MediaStore.ActionImageCapture);
-
-				App._file = new File(App._dir, String.Format("myPhoto_{0}.jpg", Guid.NewGuid()));
+				App._file = new File(App._dir, "myPhoto_" + MainActivity.index.ToString() + ".jpg");
 
 				intent.PutExtra(MediaStore.ExtraOutput, Uri.FromFile(App._file));
 
 				StartActivityForResult(intent, 0);
-				
-	//			takeAPhoto = FindViewById<Button> (Resource.Id.TakeAPhoto);
-	//			takeAPhoto.Click += TakeAPicture;
-			//	reportProblem = FindViewById<Button> (Resource.Id.ReportProblem);
+
 			}
 			// Create your application here
 		}
@@ -143,7 +144,7 @@
 			if (!App._dir.Exists())
 			{
 				App._dir.Mkdirs();
-			}
+			}	
 		}
 
 		private bool IsThereAnAppToTakePictures()
@@ -154,16 +155,11 @@
 			return availableActivities != null && availableActivities.Count > 0;
 		}
 
-		/*	private void TakeAPicture(object sender, EventArgs eventArgs)
+		public override void OnBackPressed()
 		{
-			Intent intent = new Intent(MediaStore.ActionImageCapture);
-
-			App._file = new File(App._dir, String.Format("myPhoto_{0}.jpg", Guid.NewGuid()));
-
-			intent.PutExtra(MediaStore.ExtraOutput, Uri.FromFile(App._file));
-
-			StartActivityForResult(intent, 0);
+			Intent intent = new Intent (this, typeof(MainActivity));
+			StartActivity (intent);
 		}
-*/	}
+	}
 }
 
