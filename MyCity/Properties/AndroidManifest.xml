@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.4" package="com.lavoryk.dima" android:versionCode="5">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.9" package="com.lavoryk.dima" android:versionCode="10">
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="19" />
 	<application android:icon="@drawable/icon" android:label="MyCity"></application>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

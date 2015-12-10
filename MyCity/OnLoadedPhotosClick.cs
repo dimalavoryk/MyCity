@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 using Android.Graphics;
 using Android.App;
@@ -26,28 +26,33 @@ namespace MyNewProject
 			SetContentView (Resource.Layout.OnLoadedPhotosClickScreen);
 			layot = FindViewById<LinearLayout> (Resource.Id.linearLayout1);
 
+			WorkingWithFiles import = new WorkingWithFiles ();
 
 			// Now we add items to show them 
 			// :TODO ДОДАТИ ЕКРАН ЗАГРУЗОЧНИЙ
 
-			if (MainActivity.problems [0].ProblemsItems.GetImgBitmap () != null) 
+			if (MainActivity.index > -1) 
 			{
 
 				for (int i = 0; i <= MainActivity.index; ++i) {
 					ImageView img = new ImageView (this);
 					TextView problems = new TextView (this);
 					TextView coordinates = new TextView (this);
-					TextView street = new TextView (this);
 
-					img.SetImageBitmap (MainActivity.problems [i].ProblemsItems.GetImgBitmap ());
-					problems.Text = MainActivity.problems [i].GetStringType ();
-					coordinates.Text = MainActivity.problems [i].ProblemsItems.GetCoordinates ();
-					street.Text = MainActivity.problems [i].ProblemsItems.GetStreet ();
+					problems.SetTextColor (Color.Black);
+					coordinates.SetTextColor (Color.Black);
+					problems.TextSize = 20;
+					coordinates.TextSize = 20;
+
+
+
+					img.SetImageBitmap (import.ImportBitmapFromFile(i));
+					problems.Text = import.ImportTypeFromFile (i);
+					coordinates.Text = "kek";//(import.ImportNumberFromFile ("latitude" + i + ".dat") + import.ImportNumberFromFile ("longitude" + i + ".dat")).ToString ();
 
 
 					img.Visibility = ViewStates.Gone;
 					coordinates.Visibility = ViewStates.Gone;
-					street.Visibility = ViewStates.Gone;
 
 
 					problems.Click += (sender, e) => 
@@ -56,27 +61,32 @@ namespace MyNewProject
 						{
 							img.Visibility = ViewStates.Visible;
 							coordinates.Visibility = ViewStates.Visible;
-							street.Visibility = ViewStates.Visible;
 						}
 						else
 						{
 							img.Visibility = ViewStates.Gone;
 							coordinates.Visibility = ViewStates.Gone;
-							street.Visibility = ViewStates.Gone;
 						}
 					};
 
 
 					layot.AddView (problems);
 					layot.AddView (coordinates);
-					layot.AddView (street);
-
 					layot.AddView (img);
 
 				}
 			}
 			// Create your application here
 		}
-	}
+
+	/*	public override void OnBackPressed()
+		{
+			Intent intent = new Intent (this, typeof(MainActivity));
+			StartActivity (intent);
+		}
+*/	}
+
+
+
 }
 

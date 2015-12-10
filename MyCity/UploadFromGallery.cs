@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -12,22 +10,26 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.OS;
 using Android.Provider;
-using Android.Runtime;
+//using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Net;
 
-
 using Environment = Android.OS.Environment;
-
+using Parse;
 //using Uri = Android.Net.Uri;
 using Java.IO;
+
 
 namespace MyNewProject
 {
 	[Activity (Label = "Завантажити з галереї")]			
 	public class UploadFromGallery : Activity
 	{
+
+		WorkingWithFiles work;
+		SavingToServer save;
+
 		private void PickSelected (ImageView selectedPic)
 		{
 			
@@ -37,6 +39,8 @@ namespace MyNewProject
 
 		public static readonly int PickImageId = 1000;
 		private ImageView _imageView;
+
+
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
 		{
@@ -52,9 +56,10 @@ namespace MyNewProject
 			//	Bitmap bitmap = DecodeBitmapFromStream (data.Data, 150, 150);
 				Bitmap bitmap = BitmapFactory.DecodeStream (stream);
 
-				MainActivity.problems [MainActivity.index].ProblemsItems.SetImgBitmap (bitmap);
 
-				MainActivity.problems [MainActivity.index].ProblemsItems.ExportBitmapAsPNG ();
+				work.ExportBitmapAsJPG (bitmap, MainActivity.index);
+
+				save.ExportFilesOnServer (MainActivity.type, MainActivity.latitude, MainActivity.longitude, MainActivity.index);
 
 
 				//Android.Net.Uri uri = new Android.Net.Uri ("../Application");
@@ -63,6 +68,10 @@ namespace MyNewProject
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+			Parse.ParseClient.Initialize("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
+				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
+			work = new WorkingWithFiles ();
+			save = new SavingToServer ();
 			SetContentView (Resource.Layout.LoadedPhotos);
 			_imageView = FindViewById<ImageView> (Resource.Id.imageView);
 			Intent = new Intent ();

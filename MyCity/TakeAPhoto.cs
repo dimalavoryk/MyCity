@@ -2,8 +2,6 @@
 {
 	using System;
 	using System.Collections.Generic;
-
-
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
@@ -15,6 +13,8 @@
 	using Java.IO;
 	using Environment = Android.OS.Environment;
 	using Uri = Android.Net.Uri;
+
+	using Parse;
 
 
 	public static class App 
@@ -104,24 +104,26 @@
 
 			if (App.bitmap != null) 
 			{
-				MainActivity.problems [MainActivity.index].ProblemsItems.SetImgBitmap (App.bitmap);
-				MainActivity.problems [MainActivity.index].ProblemsItems.ExportBitmapAsPNG ();
 
+				work.ExportBitmapAsJPG (App.bitmap, MainActivity.index);
+				save.ExportFilesOnServer (MainActivity.type, MainActivity.latitude, MainActivity.longitude, MainActivity.index);
 				_imageView.SetImageBitmap (App.bitmap);
 				App.bitmap = null;
 			}
-
-
-
-
 			// Dispose of the Java side bitmap.
 			GC.Collect();
 		}
-			
+
+		WorkingWithFiles work;
+		SavingToServer save;
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.LoadedPhotos);
+			Parse.ParseClient.Initialize("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
+				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
+			work = new WorkingWithFiles ();
+			save = new SavingToServer ();
 			if (IsThereAnAppToTakePictures ()) 
 			{
 				CreateDirectoryForPictures ();
@@ -134,7 +136,6 @@
 				StartActivityForResult(intent, 0);
 
 			}
-			// Create your application here
 		}
 		private void CreateDirectoryForPictures()
 		{

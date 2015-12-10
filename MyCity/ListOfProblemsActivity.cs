@@ -22,6 +22,8 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+
+
 namespace MyNewProject
 {
 	public class HomeScreenAdapter : BaseAdapter<string> {
@@ -44,6 +46,7 @@ namespace MyNewProject
 		public override View GetView(int position, View convertView, ViewGroup parent)
 		{
 			View view = convertView; // re-use an existing view, if one is available
+//			view.SetBackgroundColor(Color.White);
 			if (view == null) // otherwise create a new one
 				view = context.LayoutInflater.Inflate(Android.Resource.Layout.SimpleListItem1, null);
 			view.FindViewById<TextView>(Android.Resource.Id.Text1).Text = items[position];
@@ -73,19 +76,18 @@ namespace MyNewProject
 //			MainActivity.listProblems.AddItem(t);
 
 			++MainActivity.index;
+			WorkingWithFiles work = new WorkingWithFiles ();
 
-			var dbPath = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),"m_Index.dat");
-			//запись в файл
-			BinaryWriter bw = new BinaryWriter(new FileStream(dbPath, FileMode.OpenOrCreate));
-			bw.Write(Convert.ToInt32(MainActivity.index));
-			bw.Close();
+			work.ExportNumberInFile ("num002.dat", MainActivity.index);
 
 
-			MainActivity.problems.Add (new Problems ());
-			MainActivity.problems [MainActivity.index].SetType (t);
-			MainActivity.problems [MainActivity.index].WriteType (t);
+			MainActivity.type = t;
+			//int idx = MainActivity.index;
+			work.ExportTypeInFile (t, MainActivity.index);
 
-			Intent intent = new Intent (this, typeof(UserLocation));
+			//SavingToServer.ExportFilesOnServer (MainActivity.type, Ma);
+
+			Intent intent = new Intent (this, typeof(LoadPhotos));
 			StartActivity (intent);
 		}
 
