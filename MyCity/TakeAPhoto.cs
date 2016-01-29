@@ -2,6 +2,8 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading.Tasks;
+
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
@@ -77,6 +79,7 @@
 	[Activity (Label = "Сфотографувати")]			
 	public class TakeAPhoto : Activity
 	{
+		ProgressDialog progress;
 		private ImageView _imageView;
 	//	private Button takeAPhoto;
 //		SaveBitmap img;
@@ -105,37 +108,88 @@
 			if (App.bitmap != null) 
 			{
 
-				work.ExportBitmapAsJPG (App.bitmap, MainActivity.index);
-				save.ExportFilesOnServer (MainActivity.type, MainActivity.latitude, MainActivity.longitude, MainActivity.index);
+				Task.Factory.StartNew (
+					// tasks allow you to use the lambda syntax to pass work
+					() => 
+					{
+						string sdCardPath = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+                        string name = "image.jpg";
+						string filePath = System.IO.Path.Combine(sdCardPath, name);
+						var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create);
+						App.bitmap.Compress (Bitmap.CompressFormat.Jpeg, 20, fileStream);
+
+						fileStream.Close() ;
+
+//						System.IO.Stream fileStream = new System.IO.MemoryStream();
+//						App.bitmap.Compress(Bitmap.CompressFormat.Jpeg, 5, fileStream);
+//						ExportFilesOnParse(GetGps.type, GetGps.latitude, GetGps.longitude, GetGps.address, fileStream);
+
+					}
+					// ContinueWith allows you to specify an action that runs after the previous thread
+					// completes
+					// 
+					// By using TaskScheduler.FromCurrentSyncrhonizationContext, we can make sure that 
+					// this task now runs on the original calling thread, in this case the UI thread
+					// so that any UI updates are safe. in this example, we want to hide our overlay, 
+					// but we don't want to update the UI from a background thread.
+				).ContinueWith ( 
+					t => {
+						
+						if (progress != null)
+							progress.Hide();
+						ExportFilesOnParse(GetGps.type, GetGps.latitude, GetGps.longitude, GetGps.address, GetGps.comment);
+			/*			double lat = GetGps.latitude;
+						double lng = GetGps.longitude;
+						if (lat == 0 || lng == 0)
+						{
+							lat = work.ImportCoordinatesFromFile("latitude.dat");
+							lng = work.ImportCoordinatesFromFile("longitude.dat");
+							work.ExportCoordinatesInFile(lat, "latitude" + (GetGps.index).ToString() + ".dat");
+							work.ExportCoordinatesInFile(lng, "longitude" + (GetGps.index).ToString() + ".dat");
+						}
+						save.ExportFilesOnServer(GetGps.type, lat, lng, GetGps.index);
+			*/			//Console.WriteLine ( "Finished, hiding our loading overlay from the UI thread." );
+					}, TaskScheduler.FromCurrentSynchronizationContext()
+				);
 				_imageView.SetImageBitmap (App.bitmap);
-				App.bitmap = null;
+			//	App.bitmap = null;
 			}
 			// Dispose of the Java side bitmap.
 			GC.Collect();
 		}
 
-		WorkingWithFiles work;
 		SavingToServer save;
+		WorkingWithFiles work;
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.LoadedPhotos);
 			Parse.ParseClient.Initialize("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
 				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
-			work = new WorkingWithFiles ();
 			save = new SavingToServer ();
+			work = new WorkingWithFiles ();
+
+			Button backToMainMenu = FindViewById<Button> (Resource.Id.BackToMainMenu);
+			backToMainMenu.Click += BackToMainMenu_Click;
+
 			if (IsThereAnAppToTakePictures ()) 
 			{
 				CreateDirectoryForPictures ();
 				_imageView = FindViewById<ImageView> (Resource.Id.imageView);
 				Intent intent = new Intent(MediaStore.ActionImageCapture);
-				App._file = new File(App._dir, "myPhoto_" + MainActivity.index.ToString() + ".jpg");
+                App._file = new File(App._dir, "myPhoto_" /*+ GetGps.index.ToString()*/ + ".jpg");
 
 				intent.PutExtra(MediaStore.ExtraOutput, Uri.FromFile(App._file));
 
 				StartActivityForResult(intent, 0);
 
 			}
+		}
+
+		void BackToMainMenu_Click (object sender, EventArgs e)
+		{
+			Intent intent = new Intent (this, typeof(MainActivity));
+			StartActivity (intent);
 		}
 		private void CreateDirectoryForPictures()
 		{
@@ -155,6 +209,30 @@
 				PackageManager.QueryIntentActivities(intent, PackageInfoFlags.MatchDefaultOnly);
 			return availableActivities != null && availableActivities.Count > 0;
 		}
+
+
+		public async void ExportFilesOnParse (string type,  double latitude, double longitude, string address, string comment)
+		{
+			ParseGeoPoint location = new ParseGeoPoint (latitude, longitude);
+			string sdCardPath = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+			string name = "image.jpg";
+			string filePath = System.IO.Path.Combine(sdCardPath, name);
+			byte[] data = System.IO.File.ReadAllBytes (filePath);
+
+			ParseFile file = new ParseFile (name, data);
+
+			//		stream.Close ();
+			var problemObject = new ParseObject ("problem");
+			problemObject ["description"] = type;
+			problemObject ["coordinates"] = location;
+			problemObject ["image"] = file;
+			problemObject ["address"] = address;
+			problemObject ["comment"] = comment;
+			Android.Widget.Toast.MakeText(this, "it's work", Android.Widget.ToastLength.Short).Show();
+			await problemObject.SaveAsync ();
+		}
+
+
 
 		public override void OnBackPressed()
 		{

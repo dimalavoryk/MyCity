@@ -14,20 +14,36 @@ using Parse;
 
 namespace MyNewProject
 {
-	[Activity (Label = "GetGps")]			
+	[Activity (Label = "Отримання GPS-координат"/*, MainLauncher = true*/)  ]			
 	public class GetGps : Activity
 	{
 		GPSServiceBinder _binder;  
 		GPSServiceConnection _gpsServiceConnection;  
-		Intent _gpsServiceIntent;  
+		Intent _gpsServiceIntent;
 		private GPSServiceReciever _receiver;  
 		public static GetGps Instanse;
+       
+        static public string type;
+        static public double latitude;
+        static public double longitude;
+		static public string address;
+		static public string comment;
+ //       static public int index;
+
 
 
 		protected override void OnCreate (Bundle savedInstanceState)
 		{
 			base.OnCreate (savedInstanceState);
-			Instanse = this;
+            SetContentView(Resource.Layout.StartScreen);
+   /*         index = -1;
+            WorkingWithFiles work = new WorkingWithFiles();
+            index = work.ImportNumberFromFile("num002.dat");
+*/
+			Intent intent = new Intent (this, typeof(MainActivity));
+//			StartActivity (intent);
+
+            Instanse = this;
 			RegisterService ();
 
 			// Create your application here
@@ -62,21 +78,22 @@ namespace MyNewProject
 		{  
 			base.OnPause();  
 			UnRegisterBroadcastReceiver();  
-		}  
-
-
-	/*	private void ExportCoordinatesInFile (Intent intent)
-		{
-			var sdCardPath = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
-			if (!Directory.Exists(sdCardPath +"/Application")) Directory.CreateDirectory (sdCardPath +"/Application");
-			if (!Directory.Exists(sdCardPath +"/Application/Root Studio")) Directory.CreateDirectory (sdCardPath +"/Application/Root Studio");
-			var filePath = System.IO.Path.Combine(sdCardPath+"/Application/Root Studio", "_" + (MainActivity.index + 1).ToString() + "crdnts.xml");
-			FileStream fStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-			var myBinaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			myBinaryFormatter.Serialize(fStream, intent.GetStringExtra("Location")); 
-			fStream.Close();
 		}
-*/
+
+     //   public void StartMainActivity(Intent intent)
+		public void StartNextSession(Intent intent)
+		{
+            intent = null;
+//			intent = new Intent(this, typeof(MainActivity));
+			intent = new Intent(this, typeof(ListOfProblemsActivity));
+            StartActivity(intent);
+        }
+
+		public override void OnBackPressed()
+		{
+		//	System.Environment.Exit(0);
+			//Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+		}
 
 		[BroadcastReceiver]  
 		internal class GPSServiceReciever : BroadcastReceiver  
@@ -85,18 +102,12 @@ namespace MyNewProject
 			public override void OnReceive(Context context, Intent intent)  
 			{  
 				if (intent.Action.Equals(LOCATION_UPDATED))  
-				{  
-					MainActivity.flag = true;
-					//GetGps.Instanse.ExportCoordinatesInFile (intent);
-					//MainActivity.Instance.UpdateUI(intent);  
-				}  
+				{
+					GetGps.Instanse.StartNextSession(intent);
+                }  
 
 			}  
 		} 
-
-
-
-
 	}
 }
 

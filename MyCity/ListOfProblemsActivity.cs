@@ -49,7 +49,11 @@ namespace MyNewProject
 //			view.SetBackgroundColor(Color.White);
 			if (view == null) // otherwise create a new one
 				view = context.LayoutInflater.Inflate(Android.Resource.Layout.SimpleListItem1, null);
-			view.FindViewById<TextView>(Android.Resource.Id.Text1).Text = items[position];
+			TextView txtView = view.FindViewById<TextView> (Android.Resource.Id.Text1);
+			txtView.Text = items[position];
+			txtView.SetTextColor (Color.Black);
+			txtView.SetBackgroundColor (Color.White);
+			view.SetBackgroundColor (Color.White);
 			return view;
 		}
 	}
@@ -75,26 +79,26 @@ namespace MyNewProject
 //			MainActivity.problems.AddProblems (t);
 //			MainActivity.listProblems.AddItem(t);
 
-			++MainActivity.index;
-			WorkingWithFiles work = new WorkingWithFiles ();
+       //     ++GetGps.index;
+		//	WorkingWithFiles work = new WorkingWithFiles ();
 
-			work.ExportNumberInFile ("num002.dat", MainActivity.index);
+        //    work.ExportNumberInFile("num002.dat", GetGps.index);
 
 
-			MainActivity.type = t;
+            GetGps.type = t;
 			//int idx = MainActivity.index;
-			work.ExportTypeInFile (t, MainActivity.index);
+     //       work.ExportTypeInFile(t, GetGps.index);
 
 			//SavingToServer.ExportFilesOnServer (MainActivity.type, Ma);
 
-			Intent intent = new Intent (this, typeof(LoadPhotos));
+			Intent intent = new Intent (this, typeof(AddComment));
 			StartActivity (intent);
 		}
 
 		public override void OnBackPressed()
 		{
-			Intent intent = new Intent (this, typeof(MainActivity));
-			StartActivity (intent);
+	//		Intent intent = new Intent (this, typeof(MainActivity));
+	//		StartActivity (intent);
 		}
 	}
 }

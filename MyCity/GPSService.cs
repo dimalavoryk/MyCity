@@ -15,7 +15,7 @@ namespace MyNewProject
 	public class GPSService : Service, ILocationListener  
 	{  
 		private string _location = string.Empty;  
-	//	private string _address = string.Empty;  
+		private string _address = string.Empty;  
 	//	private string _remarks = string.Empty;  
 
 		public const string LOCATION_UPDATE_ACTION = "LOCATION_UPDATED";  
@@ -66,51 +66,46 @@ namespace MyNewProject
 					_location = String.Format("{0},{1}", _currentLocation.Latitude, _currentLocation.Longitude);  
 				//	MainActivity.latitude = _currentLocation.Latitude;
 				//	MainActivity.longitude = _currentLocation.Longitude;
-				
-					MainActivity.latitude = _currentLocation.Latitude;
-					MainActivity.longitude = _currentLocation.Longitude;
-
-					WorkingWithFiles work = new WorkingWithFiles();
-					work.ExportCoordinatesInFile(MainActivity.latitude, "latitude" + MainActivity.index.ToString() + ".dat");
-					work.ExportCoordinatesInFile(MainActivity.longitude, "longitude" + MainActivity.index.ToString() + ".dat");
-					/*	Geocoder geocoder = new Geocoder(this);  
-
-					//The Geocoder class retrieves a list of address from Google over the internet  
+					Geocoder geocoder = new Geocoder(this);  
 					IList<Address> addressList = geocoder.GetFromLocation(_currentLocation.Latitude, _currentLocation.Longitude, 10);  
-
-					Address addressCurrent = addressList.FirstOrDefault();  
-
+					Address addressCurrent = addressList.FirstOrDefault();
 					if (addressCurrent != null)  
 					{  
-						StringBuilder deviceAddress = new StringBuilder();  
-
-						for (int i = 0; i < addressCurrent.MaxAddressLineIndex; i++)  
-							deviceAddress.Append(addressCurrent.GetAddressLine(i))  
-								.AppendLine(",");  
-
-						_address = deviceAddress.ToString();  
+							StringBuilder deviceAddress = new StringBuilder();  
+					
+							for (int i = 0; i < addressCurrent.MaxAddressLineIndex; i++)  
+									deviceAddress.Append(addressCurrent.GetAddressLine(i))  
+										.AppendLine(",");  
+					
+							_address = deviceAddress.ToString(); 
 					}  
 					else  
-						_address = "Unable to determine the address.";  
-*/
-				//	IList<Address> source = geocoder.GetFromLocationName(_sourceAddress, 1);  
-				//	Address addressOrigin = source.FirstOrDefault();  
+							_address = "Unable to determine the address.";
+					if (MainActivity.isNeeded)
+					{
+						GetGps.address = _address;
+			//		if (GetGps.latitude == 0 || GetGps.longitude == 0)
+			//		{
+                   		GetGps.latitude = _currentLocation.Latitude;
+                   		GetGps.longitude = _currentLocation.Longitude;
 
-			//		var coord1 = new LatLng(addressOrigin.Latitude, addressOrigin.Longitude);  
-			//		var coord2 = new LatLng(addressCurrent.Latitude, addressCurrent.Longitude);  
+			/*			double lat = GetGps.latitude;
+						double lng = GetGps.longitude;
+						WorkingWithFiles work = new WorkingWithFiles();
+						work.ExportCoordinatesInFile(lat, "latitude" + (GetGps.index + 1).ToString() + ".dat");
+						work.ExportCoordinatesInFile(lng, "longitude" + (GetGps.index + 1).ToString() + ".dat");
+						work.ExportCoordinatesInFile(lat, "latitude.dat");
+						work.ExportCoordinatesInFile(lng, "longitude.dat");
+			*/
 
-					//_remarks = string.Format("Your are {0} miles away from your original location.", distanceInRadius);  
-
-
-
-				//	Intent intent = new Intent(this, typeof(MainActivity.GPSServiceReciever));  
-				//	intent.SetAction(MainActivity.GPSServiceReciever.LOCATION_UPDATED);  
-					Intent intent = new Intent(this, typeof(GetGps.GPSServiceReciever));
-					intent.SetAction(GetGps.GPSServiceReciever.LOCATION_UPDATED); 	intent.AddCategory(Intent.CategoryDefault);  
-					intent.PutExtra("Location", _location);  
-				//	intent.PutExtra("Address", _address);  
-				//	intent.PutExtra("Remarks", _remarks);  
-					SendBroadcast(intent);  
+						Intent intent = new Intent(this, typeof(GetGps.GPSServiceReciever));
+						intent.SetAction(GetGps.GPSServiceReciever.LOCATION_UPDATED);
+						intent.AddCategory(Intent.CategoryDefault);  
+						intent.PutExtra("Location", _location);
+						SendBroadcast(intent);  
+						MainActivity.isNeeded = false;
+					}
+			//		}
 				}  
 			}  
 			catch (Exception ex)  
@@ -170,6 +165,7 @@ namespace MyNewProject
 		public void OnServiceDisconnected(ComponentName name) { this._binder.IsBound = false; }  
 	}  
 }
+
 
 
 

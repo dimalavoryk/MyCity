@@ -50,21 +50,26 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ListOfProblemsActivity.cs" />
     <Compile Include="TakeAPhoto.cs" />
     <Compile Include="UploadFromGallery.cs" />
     <Compile Include="LoadPhotos.cs" />
     <Compile Include="OnLoadedPhotosClick.cs" />
     <Compile Include="LatLng.cs" />
+    <Compile Include="ListOfProblemsActivity.cs" />
     <Compile Include="GPSService.cs" />
     <Compile Include="Saving.cs" />
     <Compile Include="GetGps.cs" />
+    <Compile Include="AddComment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="packages.config" />
+    <AndroidResource Include="Resources\layout\StartScreen.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\AddComment.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />

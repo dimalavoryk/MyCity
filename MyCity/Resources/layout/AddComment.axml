@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="100"
+    android:background="#ffffffff">
+    <TextView
+        android:text="Додайте свій коментар"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textOverEdit"
+        android:layout_weight="10"
+        android:textColor="#ff0f0505"
+        android:textSize="20dp"
+        android:textAlignment="center" />
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:background="@android:color/white"
+        android:textColor="#ff0c0707" />
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:textColor="#ff050202"
+        android:textSize="20dp" />
+    <Button
+        android:text="Продовжити"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttonreportproblemstyle"
+        android:layout_weight="10"
+        android:id="@+id/NextButtonS"
+        android:textSize="24dp" />
+</LinearLayout>

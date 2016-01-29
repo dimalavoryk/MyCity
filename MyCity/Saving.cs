@@ -68,7 +68,7 @@
 			bw.Write (Convert.ToDouble (num));
 			bw.Close();
 		}
-
+			
 		public double ImportCoordinatesFromFile (string name)
 		{
 			double num = 0;
@@ -125,7 +125,6 @@
 			string sdCardPath = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
 			string name = "_" + index.ToString () + ".jpg";
 			string filePath = System.IO.Path.Combine(sdCardPath, name);
-		//	System.Threading.Thread.Sleep (5000);
 			byte[] data = System.IO.File.ReadAllBytes (filePath);
 			ParseGeoPoint location = new ParseGeoPoint (latitude, longitude);
 			ParseFile file = new ParseFile (name, data);

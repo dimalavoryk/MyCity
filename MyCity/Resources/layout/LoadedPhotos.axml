@@ -6,6 +6,12 @@
     android:minWidth="25px"
     android:minHeight="25px"
     android:background="#fff5f5f5">
+    <Button
+        android:text="Повернутися до головного меню"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttonreportproblemstyle"
+        android:id="@+id/BackToMainMenu" />
     <ImageView
         android:src="@android:drawable/ic_menu_gallery"
         android:layout_width="match_parent"
