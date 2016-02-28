@@ -13,7 +13,7 @@ using Android.Widget;
 
 namespace MyNewProject
 {
-	[Activity (Label = "LoadPhotos")]			
+	[Activity (Label = "Завантажити фото", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]			
 	public class LoadPhotos : Activity
 	{
 		private Button takeAPhoto;
@@ -34,12 +34,14 @@ namespace MyNewProject
 		void UploadFromGallery_Click (object sender, EventArgs e)
 		{
 			Intent intent1 = new Intent (this, typeof(UploadFromGallery));
+			Finish ();
 			StartActivity (intent1);
 		}
 
 		void TakeAPhoto_Click (object sender, EventArgs e)
 		{
 			Intent intent = new Intent (this, typeof(TakeAPhoto));
+			Finish ();
 			StartActivity (intent);
 			//			
 		}

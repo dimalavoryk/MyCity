@@ -54,18 +54,19 @@ namespace MyNewProject
 			txtView.SetTextColor (Color.Black);
 			txtView.SetBackgroundColor (Color.White);
 			view.SetBackgroundColor (Color.White);
+
 			return view;
 		}
 	}
 
-	[Activity (Label = "Список проблем")]			
+	[Activity (Label = "Список проблем", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]			
 	public class ListOfProblemsActivity : ListActivity
 	{
 		string [] items;
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-			items = new string[]{"Яма на дорозі", "Відкритий люк", "Непрацюючий світлофор", "Аварійний будинок", "Занедбаний майданчик" };
+			items = new string[]{"Яма на дорозі", "Відкритий люк", "Занедбаний майданчик", "Комунальні проблеми", "Неприбране сміття", "Неприбраний сніг", "Неправильна парковка" };
 //			ListAdapter = new ArrayAdapter<string> (this, Android.Resource.Layout.SimpleListItem1, items);
 			//ListView list = FindViewById<ListView>(Resource.Id.listView);
 			//ListAdapter = new ArrayAdapter<string> (this, Android.Resource.Layout.SimpleListItem1, items);
@@ -76,29 +77,18 @@ namespace MyNewProject
 		{
 			var t = items [position];
 			Android.Widget.Toast.MakeText(this, t, Android.Widget.ToastLength.Short).Show();
-//			MainActivity.problems.AddProblems (t);
-//			MainActivity.listProblems.AddItem(t);
 
-       //     ++GetGps.index;
-		//	WorkingWithFiles work = new WorkingWithFiles ();
+			MainActivity.type = t;
 
-        //    work.ExportNumberInFile("num002.dat", GetGps.index);
-
-
-            GetGps.type = t;
-			//int idx = MainActivity.index;
-     //       work.ExportTypeInFile(t, GetGps.index);
-
-			//SavingToServer.ExportFilesOnServer (MainActivity.type, Ma);
 
 			Intent intent = new Intent (this, typeof(AddComment));
+			Finish();
 			StartActivity (intent);
 		}
 
 		public override void OnBackPressed()
 		{
-	//		Intent intent = new Intent (this, typeof(MainActivity));
-	//		StartActivity (intent);
+			
 		}
 	}
 }

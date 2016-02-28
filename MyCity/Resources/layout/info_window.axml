@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E2E2E2"
+    android:minWidth="700px"
+    android:minHeight="25px"
+    android:weightSum="100">
+    <TextView
+        android:layout_weight="5"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center"
+        android:text="Категорія"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/description" />
+    <LinearLayout
+        android:layout_weight="95"
+        android:weightSum="100"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout1">
+        <ImageView
+            android:layout_weight="50"
+            android:src="@drawable/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/image" />
+        <LinearLayout
+            android:layout_weight="50"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout2">
+            <TextView
+                android:text="Координати"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/coordinates" />
+            <TextView
+                android:text="Адреса"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/address" />
+            <TextView
+                android:text="Короткий опис"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/comment" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

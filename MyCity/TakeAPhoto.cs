@@ -1,4 +1,7 @@
-﻿namespace MyNewProject
+﻿using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace MyNewProject
 {
 	using System;
 	using System.Collections.Generic;
@@ -76,7 +79,7 @@
 		}
 	}
 
-	[Activity (Label = "Сфотографувати")]			
+	[Activity (Label = "Сфотографувати", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]			
 	public class TakeAPhoto : Activity
 	{
 		ProgressDialog progress;
@@ -102,9 +105,6 @@
 			int width = _imageView.Height;
 			App.bitmap = App._file.Path.LoadAndResizeBitmap (width, height);
 
-//			img.AddItem (App.bitmap);
-//			img.WriteList ("1");
-
 			if (App.bitmap != null) 
 			{
 
@@ -122,7 +122,7 @@
 
 //						System.IO.Stream fileStream = new System.IO.MemoryStream();
 //						App.bitmap.Compress(Bitmap.CompressFormat.Jpeg, 5, fileStream);
-//						ExportFilesOnParse(GetGps.type, GetGps.latitude, GetGps.longitude, GetGps.address, fileStream);
+//						ExportFilesOnParse(MainActivity.type, MainActivity.latitude, MainActivity.longitude, MainActivity.address, fileStream);
 
 					}
 					// ContinueWith allows you to specify an action that runs after the previous thread
@@ -137,7 +137,7 @@
 						
 						if (progress != null)
 							progress.Hide();
-						ExportFilesOnParse(GetGps.type, GetGps.latitude, GetGps.longitude, GetGps.address, GetGps.comment);
+						ExportFilesOnParse(MainActivity.type, MainActivity.latitude, MainActivity.longitude, MainActivity.address, MainActivity.comment);
 			/*			double lat = GetGps.latitude;
 						double lng = GetGps.longitude;
 						if (lat == 0 || lng == 0)
@@ -158,16 +158,16 @@
 			GC.Collect();
 		}
 
-		SavingToServer save;
-		WorkingWithFiles work;
+//		SavingToServer save;
+//		WorkingWithFiles work;
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.LoadedPhotos);
 			Parse.ParseClient.Initialize("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
 				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
-			save = new SavingToServer ();
-			work = new WorkingWithFiles ();
+	//		save = new SavingToServer ();
+	//		work = new WorkingWithFiles ();
 
 			Button backToMainMenu = FindViewById<Button> (Resource.Id.BackToMainMenu);
 			backToMainMenu.Click += BackToMainMenu_Click;
@@ -188,8 +188,9 @@
 
 		void BackToMainMenu_Click (object sender, EventArgs e)
 		{
-			Intent intent = new Intent (this, typeof(MainActivity));
-			StartActivity (intent);
+			//Intent intent = new Intent (this, typeof(MainActivity));
+			Finish ();
+			//StartActivity (intent);
 		}
 		private void CreateDirectoryForPictures()
 		{
@@ -221,7 +222,16 @@
 
 			ParseFile file = new ParseFile (name, data);
 
-			//		stream.Close ();
+	/*		var sdCardPathID = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+			var filePathID = System.IO.Path.Combine(sdCardPathID+"/Application/Root Studio", "UserId.xml");
+			if (System.IO.File.Exists (filePathID)) {
+				FileStream fStream = new FileStream(filePathID, FileMode.Open, FileAccess.Read);
+
+				var myBinaryFormatter = new BinaryFormatter ();
+				var mc = (string)myBinaryFormatter.Deserialize (fStream);
+				fStream.Close();
+
+			}*/
 			var problemObject = new ParseObject ("problem");
 			problemObject ["description"] = type;
 			problemObject ["coordinates"] = location;
@@ -236,8 +246,9 @@
 
 		public override void OnBackPressed()
 		{
-			Intent intent = new Intent (this, typeof(MainActivity));
-			StartActivity (intent);
+		//	Intent intent = new Intent (this, typeof(MainActivity));
+			Finish ();
+		//	StartActivity (intent);
 		}
 	}
 }

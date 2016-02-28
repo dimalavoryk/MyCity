@@ -22,7 +22,8 @@
             android:textAlignment="center"
             tools:text="Будь ласка, зачекайте. Отримуються координати пристрою..."
             android:includeFontPadding="true"
-            style="@android:style/Widget.TextView" />
+            style="@android:style/Widget.TextView"
+            android:gravity="center" />
     </RelativeLayout>
     <RelativeLayout
         android:minWidth="25px"

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>  
-
-
+	<string name="app_name">My City</string>
+	<string name="facebook_app_id">1564439573866463</string>
+	<string name="googleApiKey ">AIzaSyCVAyaqRcwWpCPOfEyXVkvURt2cVPw_ovU</string>
 </resources>

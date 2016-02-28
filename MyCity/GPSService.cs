@@ -12,11 +12,10 @@ using Android.Locations;
 namespace MyNewProject
 {
 	[Service]  
-	public class GPSService : Service, ILocationListener  
+	public class GPSService : Service, ILocationListener
 	{  
 		private string _location = string.Empty;  
 		private string _address = string.Empty;  
-	//	private string _remarks = string.Empty;  
 
 		public const string LOCATION_UPDATE_ACTION = "LOCATION_UPDATED";  
 		private Location _currentLocation;  
@@ -50,11 +49,10 @@ namespace MyNewProject
 
 
 
-
-
-		public event EventHandler<LocationChangedEventArgs> LocationChanged = delegate { };  
 		public void OnLocationChanged(Location location)  
 		{  
+			if (MainActivity.isStarted)
+			{
 			try  
 			{  
 				_currentLocation = location;  
@@ -81,40 +79,29 @@ namespace MyNewProject
 					}  
 					else  
 							_address = "Unable to determine the address.";
-					if (MainActivity.isNeeded)
-					{
-						GetGps.address = _address;
-			//		if (GetGps.latitude == 0 || GetGps.longitude == 0)
-			//		{
-                   		GetGps.latitude = _currentLocation.Latitude;
-                   		GetGps.longitude = _currentLocation.Longitude;
+					
+					MainActivity.address = _address;
 
-			/*			double lat = GetGps.latitude;
-						double lng = GetGps.longitude;
-						WorkingWithFiles work = new WorkingWithFiles();
-						work.ExportCoordinatesInFile(lat, "latitude" + (GetGps.index + 1).ToString() + ".dat");
-						work.ExportCoordinatesInFile(lng, "longitude" + (GetGps.index + 1).ToString() + ".dat");
-						work.ExportCoordinatesInFile(lat, "latitude.dat");
-						work.ExportCoordinatesInFile(lng, "longitude.dat");
-			*/
+					MainActivity.latitude = _currentLocation.Latitude;
+					MainActivity.longitude = _currentLocation.Longitude;
 
-						Intent intent = new Intent(this, typeof(GetGps.GPSServiceReciever));
-						intent.SetAction(GetGps.GPSServiceReciever.LOCATION_UPDATED);
-						intent.AddCategory(Intent.CategoryDefault);  
-						intent.PutExtra("Location", _location);
-						SendBroadcast(intent);  
-						MainActivity.isNeeded = false;
-					}
-			//		}
+					Intent intent = new Intent(this, typeof(GetGps.GPSServiceReciever));
+					intent.SetAction(GetGps.GPSServiceReciever.LOCATION_UPDATED);
+					intent.AddCategory(Intent.CategoryDefault);  
+					intent.PutExtra("Location", _location);
+					SendBroadcast(intent);  
+						MainActivity.isStarted = false;
+					StopSelf();
 				}  
-			}  
+			}
+			
 			catch (Exception ex)  
 			{  
 				//_address = "Unable to determine the address.";  
 			}  
 
 		}  
-
+		}
 		public void OnStatusChanged(string provider, Availability status, Bundle extras)  
 		{  
 			//TO DO:  
@@ -122,7 +109,7 @@ namespace MyNewProject
 
 		public void OnProviderDisabled(string provider)  
 		{  
-			//TO DO:  
+			//TO 
 		}  
 
 		public void OnProviderEnabled(string provider)  
@@ -161,6 +148,7 @@ namespace MyNewProject
 				if (Connected != null)  
 					Connected.Invoke();  
 			}  
+
 		}  
 		public void OnServiceDisconnected(ComponentName name) { this._binder.IsBound = false; }  
 	}  

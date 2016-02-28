@@ -12,7 +12,7 @@ using Android.Widget;
 
 namespace MyNewProject
 {
-	[Activity (Label = "AddComment")]			
+	[Activity (Label = "Короткий опис", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]			
 	public class AddComment : Activity
 	{
 		TextView textView;
@@ -40,9 +40,13 @@ namespace MyNewProject
 			if (textView.Text == null) {
 				textView.Text = "Опис відсутній";
 			}
-			GetGps.comment = textView.Text;
+			MainActivity.comment = textView.Text;
 			Intent intent = new Intent (this, typeof(LoadPhotos));
+			Finish ();
 			StartActivity (intent);
+		}
+		public override void OnBackPressed()
+		{
 		}
 	}
 }

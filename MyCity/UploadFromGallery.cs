@@ -24,11 +24,11 @@ using Java.IO;
 
 namespace MyNewProject
 {
-	[Activity (Label = "Завантажити з галереї")]			
+	[Activity (Label = "Завантажити з галереї", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]			
 	public class UploadFromGallery : Activity
 	{
-		WorkingWithFiles work;
-		SavingToServer save;
+	//	WorkingWithFiles work;
+	//	SavingToServer save;
 		ProgressDialog progress;
 		private void PickSelected (ImageView selectedPic)
 		{
@@ -84,15 +84,21 @@ namespace MyNewProject
 					t => {
 						if (progress != null)
 							progress.Hide();
+
+
+
+
+
+
 						//save.ExportFilesOnServer(GetGps.type, GetGps.latitude, GetGps.longitude, 1);
-						ExportFilesOnParse(GetGps.type, GetGps.latitude, GetGps.longitude, GetGps.address, GetGps.comment);
-					/*	double lat = GetGps.latitude;
-						double lng = GetGps.longitude;
+						ExportFilesOnParse(MainActivity.type, MainActivity.latitude, MainActivity.longitude, MainActivity.address, MainActivity.comment);
+					/*	double lat = MainActivity.latitude;
+						double lng = MainActivity.longitude;
 						if (lat == 0 || lng == 0)
 						{
 							lat = work.ImportCoordinatesFromFile("latitude.dat");
 							lng = work.ImportCoordinatesFromFile("longitude.dat");
-							work.ExportCoordinatesInFile(lat, "latitude" + (GetGps.index).ToString() + ".dat");
+							work.ExportCoordinatesInFile(lat, "latitude" + (MainActivity.index).ToString() + ".dat");
 							work.ExportCoordinatesInFile(lng, "longitude" + (GetGps.index).ToString() + ".dat");
 						}
                         save.ExportFilesOnServer(GetGps.type, lat, lng, GetGps.index);
@@ -106,8 +112,8 @@ namespace MyNewProject
 			base.OnCreate (bundle);
 			Parse.ParseClient.Initialize("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
 				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
-			save = new SavingToServer ();
-			work = new WorkingWithFiles ();
+	//		save = new SavingToServer ();
+	//		work = new WorkingWithFiles ();
 			SetContentView (Resource.Layout.LoadedPhotos);
 
 			Button backToMainMenu = FindViewById<Button> (Resource.Id.BackToMainMenu);
@@ -122,8 +128,9 @@ namespace MyNewProject
 
 		void BackToMainMenu_Click (object sender, EventArgs e)
 		{
-			Intent intent = new Intent (this, typeof(MainActivity));
-			StartActivity (intent);
+			//Intent intent = new Intent (this, typeof(MainActivity));
+			Finish ();
+			//StartActivity (intent);
 		}
 		private Bitmap DecodeBitmapFromStream (Android.Net.Uri data, int requestedWidth, int requestedHeigth)
 		{
@@ -174,6 +181,18 @@ namespace MyNewProject
 			string filePath = System.IO.Path.Combine(sdCardPath, name);
 			byte[] data = System.IO.File.ReadAllBytes (filePath);
 
+	/*		var sdCardPathID = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+			var filePathID = System.IO.Path.Combine(sdCardPathID+"/Application/Root Studio", "UserId.xml");
+			if (System.IO.File.Exists (filePathID)) {
+				FileStream fStream = new FileStream(filePathID, FileMode.Open, FileAccess.Read);
+
+				var myBinaryFormatter = new BinaryFormatter ();
+				var mc = (string)myBinaryFormatter.Deserialize (fStream);
+				fStream.Close();
+
+			}
+*/
+
 			ParseFile file = new ParseFile (name, data);
 
 			var problemObject = new ParseObject ("problem");
@@ -190,8 +209,9 @@ namespace MyNewProject
 
 		public override void OnBackPressed()
 		{
-			Intent intent = new Intent (this, typeof(MainActivity));
-			StartActivity (intent);
+	//		Intent intent = new Intent (this, typeof(MainActivity));
+			Finish ();
+	//		StartActivity (intent);
 		}
 	}
 }

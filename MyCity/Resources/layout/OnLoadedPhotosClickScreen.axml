@@ -4,11 +4,49 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#fff5f5f5">
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout1" />
+        android:id="@+id/frameLayout1">
+        <Button
+            android:text="Попередня"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:background="@drawable/buttonreportproblemstyle"
+            android:minWidth="120dp"
+            android:id="@+id/previousPage" />
+        <Button
+            android:text="Наступна"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:minWidth="120dp"
+            android:background="@drawable/buttonreportproblemstyle"
+            android:id="@+id/nextPage" />
+        <TextView
+            android:text="1"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|center"
+            android:textColor="@android:color/holo_blue_bright"
+            android:id="@+id/pageNumber" />
+    </FrameLayout>
+    <ScrollView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout1" />
+    </ScrollView>
 </LinearLayout>

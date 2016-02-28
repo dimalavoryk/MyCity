@@ -14,7 +14,7 @@ using Parse;
 
 namespace MyNewProject
 {
-	[Activity (Label = "Отримання GPS-координат"/*, MainLauncher = true*/)  ]			
+	[Activity (Label = "Отримання GPS-координат", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait/*, MainLauncher = true*/)  ]			
 	public class GetGps : Activity
 	{
 		GPSServiceBinder _binder;  
@@ -23,25 +23,14 @@ namespace MyNewProject
 		private GPSServiceReciever _receiver;  
 		public static GetGps Instanse;
        
-        static public string type;
-        static public double latitude;
-        static public double longitude;
-		static public string address;
-		static public string comment;
- //       static public int index;
-
 
 
 		protected override void OnCreate (Bundle savedInstanceState)
 		{
 			base.OnCreate (savedInstanceState);
             SetContentView(Resource.Layout.StartScreen);
-   /*         index = -1;
-            WorkingWithFiles work = new WorkingWithFiles();
-            index = work.ImportNumberFromFile("num002.dat");
-*/
+
 			Intent intent = new Intent (this, typeof(MainActivity));
-//			StartActivity (intent);
 
             Instanse = this;
 			RegisterService ();
@@ -83,10 +72,10 @@ namespace MyNewProject
      //   public void StartMainActivity(Intent intent)
 		public void StartNextSession(Intent intent)
 		{
-            intent = null;
-//			intent = new Intent(this, typeof(MainActivity));
 			intent = new Intent(this, typeof(ListOfProblemsActivity));
-            StartActivity(intent);
+			Finish ();
+
+			StartActivity(intent);
         }
 
 		public override void OnBackPressed()

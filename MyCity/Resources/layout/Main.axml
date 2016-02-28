@@ -50,19 +50,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
     <Button
-        android:text="Вирішені проблеми"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="18"
-        android:id="@+id/solvedProblems"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:background="@drawable/buttonreportproblemstyle"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
-    <Button
         android:text="Вихід"
         android:textStyle="bold"
         android:layout_width="match_parent"

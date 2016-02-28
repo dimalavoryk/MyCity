@@ -10,26 +10,27 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO;
 
+using Java.IO;
 
 using Parse;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyNewProject
 {
-	[Activity (Label = "MyCity", Icon = "@drawable/icon", MainLauncher = true)]
+	[Activity (Label = "Головне меню", Icon = "@drawable/icon"/*, MainLauncher = true*/, ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]
 	public class MainActivity : Activity
 	{
+		static public string type;
+		static public double latitude;
+		static public double longitude;
+		static public string address;
+		static public string comment;
 
-		public static bool isNeeded;
-	//	public static MainActivity Instance;
+		static public bool isStarted = false;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-           // GetGps.index = -1;
-
-          //  WorkingWithFiles work = new WorkingWithFiles();
-          //  GetGps.index = work.ImportNumberFromFile("num002.dat");
-
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 			Button exit = FindViewById<Button> (Resource.Id.Exit);
@@ -38,8 +39,17 @@ namespace MyNewProject
 			reportProblem.Click += ReportProblemClick;
 			Button loadedPhotos = FindViewById<Button> (Resource.Id.loadedPhotos);
 			loadedPhotos.Click += LoadedPhotos_Click;
+			Button markersOnMap = FindViewById<Button> (Resource.Id.seeOnMap);
+			markersOnMap.Click += MarkersOnMap_Click;
+		}
 
-
+		void MarkersOnMap_Click (object sender, EventArgs e)
+		{
+			/*var uri = Android.Net.Uri.Parse ("http://myrivne.parseapp.com/ShowingMarkersOnMap.html");
+			var intent = new Intent (Intent.ActionView, uri);  
+		*/
+			Intent intent = new Intent (this, typeof(ShowMap));
+			StartActivity (intent);
 		}
 
 		private void LoadedPhotos_Click (object sender, EventArgs e)
@@ -50,15 +60,15 @@ namespace MyNewProject
 
 		void Exit_Click (object sender, EventArgs e)
 		{
+		//	Finish ();
 			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
 		}
 
 
 		private void ReportProblemClick (object sender, EventArgs e)
 		{
-			Intent intent = new Intent (this, typeof(ListOfProblemsActivity));
-		//	Intent intent = new Intent(this, typeof(GetGps));
-			isNeeded = true;
+			isStarted = true;
+			Intent intent = new Intent(this, typeof(GetGps));
 			StartActivity (intent);
 		}
 			

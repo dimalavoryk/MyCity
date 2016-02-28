@@ -19,60 +19,146 @@ using Parse;
 
 namespace MyNewProject
 {
-	[Activity (Label = "OnLoadedPhotosClick")]			
+	[Activity (Label = "Завантажені фото", ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]			
 	public class OnLoadedPhotosClick : Activity
 	{
+		bool onNextPageClick = false;
+		bool onPreviousPageClick = false;
+		int count = 0;
+		const byte maxCountInView = 10;
+		int pagesCount;
+		int currentPageNumber = 0;
+		int currentCount = 0;
 		WebClient webClient;
-		//public Task<IEnumerable<ParseObject>> results;
-		public async void GetFiles ()
+		LinearLayout linearLayout;
+		List<string> descriptionList = new List<string> ();
+		List<ParseGeoPoint> locationList = new List<ParseGeoPoint> ();
+		List<ParseFile> parseFiles = new List<ParseFile> ();
+		List<string> addressList = new List<string> ();
+		List<string> commentList = new List<string> ();
+		Button nextPage, previousPage;
+
+		ProgressDialog progress;
+
+		TextView pageNumber;
+
+		protected override void OnCreate (Bundle savedInstanceState)
 		{
-			ParseQuery<ParseObject> query = ParseObject.GetQuery("problem");
-			IEnumerable<ParseObject> relatedObjects = await query.FindAsync();
-			List<string> problemsTxtList = new List<string> ();
-			List<ParseGeoPoint> location = new List<ParseGeoPoint> ();
-			List<ParseFile> parseFiles = new List<ParseFile> ();
-			List<string> addressList = new List<string> ();
-			List<string> commentList = new List<string> ();
-			int i = 0;
-			foreach (ParseObject problem in relatedObjects) {
-				problemsTxtList.Add(problem.Get<string>("description"));
-				location.Add(problem.Get<ParseGeoPoint>("coordinates"));
-				parseFiles.Add (problem.Get<ParseFile> ("image"));
-				addressList.Add (problem.Get<string> ("address"));
-				commentList.Add (problem.Get<string> ("comment"));
+			base.OnCreate (savedInstanceState);
+			Parse.ParseClient.Initialize ("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
+				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
 
-				ImageView img = new ImageView (this);
-				TextView problemTXT = new TextView(this);
-				TextView coordinates = new TextView (this);
-				TextView address = new TextView (this);
-				TextView comment = new TextView (this);
+			SetContentView (Resource.Layout.OnLoadedPhotosClickScreen);
 
-				problemTXT.SetTextColor (Color.Black);
-				coordinates.SetTextColor (Color.Black);
-				address.SetTextColor (Color.Black);
-				comment.SetTextColor (Color.Black);
+			linearLayout = FindViewById<LinearLayout> (Resource.Id.linearLayout1);
+
+			GetFilesFromParse ();
+
+			nextPage = FindViewById<Button> (Resource.Id.nextPage);
+			previousPage = FindViewById<Button> (Resource.Id.previousPage);
+			pageNumber = FindViewById<TextView> (Resource.Id.pageNumber);
+
+			nextPage.Enabled = false;
+			previousPage.Enabled = false;
+
+			nextPage.Click += NextPage_Click;
+			previousPage.Click += PreviousPage_Click;
 
 
-				problemTXT.TextSize = 20;
-				coordinates.TextSize = 20;
-				address.TextSize = 20;
-				comment.TextSize = 20;
+		}
 
-				problemTXT.Text = problemsTxtList [i];
-				coordinates.Text = "latitude" + location [i].Latitude.ToString () + "; longitude" + location [i].Longitude.ToString ();
-				address.Text = addressList [i];
-				comment.Text = commentList [i];
+		void PreviousPage_Click (object sender, EventArgs e)
+		{
+			linearLayout.RemoveAllViews ();
+			GC.Collect ();
+			DownloadPreviousPage ();
+		}
 
-				downloadAsync (img, parseFiles [i].Url.ToString(), problemTXT, coordinates, address, comment);
-				++i;
+		void NextPage_Click (object sender, EventArgs e)
+		{
+			linearLayout.RemoveAllViews ();
+			GC.Collect ();
+			DownloadNextPage ();
+		}
+
+		public void DownloadPreviousPage ()
+		{
+			int start, end;
+			onPreviousPageClick = true;
+			if (onNextPageClick) {
+				currentCount -= maxCountInView;
+				onNextPageClick = false;
+			}
+
+			if (currentCount <= 0) 
+			{
+				currentCount = count;
+				end = currentCount;
+				currentCount -= maxCountInView;
+				start = currentCount;
+				currentPageNumber = pagesCount;
+			} 
+			else 
+			{
+				end = currentCount;
+				currentCount -= maxCountInView;
+				--currentPageNumber;
+				if (currentCount < 0) 
+				{
+					currentCount = 0;
+					currentPageNumber = 1;
+				}
+				start = currentCount;
+			}
+			pageNumber.Text = currentPageNumber.ToString ();
+
+			for (int i = start; i < end; ++i) 
+			{
+				downloadAsync (i);
 			}
 
 		}
 
-		async void downloadAsync(ImageView img, string _url, TextView problemTXT, TextView coordinates, TextView address, TextView comment)
+		public void DownloadNextPage ()
+		{
+			onNextPageClick = true;
+			if (onPreviousPageClick) {
+				currentCount += maxCountInView;
+				onPreviousPageClick = false;
+			}
+			int start = currentCount;
+			int end;
+			if (start >= count) 
+			{
+				start = 0;
+				end = maxCountInView;
+				currentCount = 0;
+				currentPageNumber = 1;
+			} 
+			else 
+			{
+				++currentPageNumber;
+				currentCount += maxCountInView;
+				end = currentCount;
+
+				if (end > count) {
+					end = count;
+				}
+			}
+
+			pageNumber.Text = currentPageNumber.ToString ();
+
+			for (int i = start; i < end; ++i) 
+			{
+				downloadAsync (i);
+			}
+
+		}
+
+		async void downloadAsync (int index)
 		{
 			webClient = new WebClient ();
-			var url = new Uri (_url);
+			var url = new Uri (parseFiles[index].Url.ToString());
 			byte[] bytes = null;
 
 			try{
@@ -87,7 +173,7 @@ namespace MyNewProject
 				return;
 			}
 			string documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal);	
-			string localFilename = "downloaded.png";
+			string localFilename = "downloaded" + index.ToString () + ".png";
 			string localPath = System.IO.Path.Combine (documentsPath, localFilename);
 
 			//Sive the Image using writeAsync
@@ -101,74 +187,81 @@ namespace MyNewProject
 			var widthInDp = ConvertPixelsToDp(metrics.WidthPixels);
 			var heightInDp = ConvertPixelsToDp(metrics.HeightPixels);
 
-			//img.SetMaxWidth(widthInDp);
-			//img.SetMaxHeight(heightInDp - 50);
-
-
 
 			BitmapFactory.Options options = new BitmapFactory.Options ();
 			options.InJustDecodeBounds = true;
 			await BitmapFactory.DecodeFileAsync (localPath, options);
 
-			options.InSampleSize = options.OutWidth > options.OutHeight ? options.OutHeight / /*img.Height*/ (heightInDp-50) : options.OutWidth /(widthInDp-50)/* img.Width*/;
-				options.InJustDecodeBounds = false;
+			options.InSampleSize = options.OutWidth > options.OutHeight ? options.OutHeight /  (heightInDp-50) : options.OutWidth /(widthInDp-50);
+			options.InJustDecodeBounds = false;
 
 			Bitmap bitmap = await BitmapFactory.DecodeFileAsync (localPath, options);
 
+			CreateInfo (bitmap, index);
+
 			Console.WriteLine ("Loaded!");
 
+		}
 
-
+		void CreateInfo (Bitmap bitmap, int index)
+		{
+			string coordinates = "Широта: " + locationList [index].Latitude.ToString () + "; Довгота: " + locationList [index].Longitude.ToString ();
+			CreateTextView (descriptionList [index]);
+			CreateTextView (coordinates);
+			CreateTextView (addressList [index]);
+			CreateTextView (commentList [index]);
+			ImageView img = new ImageView (this);
 			img.SetImageBitmap (bitmap);
 
-			img.Visibility = ViewStates.Gone;
-			coordinates.Visibility = ViewStates.Gone;
-			address.Visibility = ViewStates.Gone;
-			comment.Visibility = ViewStates.Gone;
-
-			problemTXT.Click += (sender, e) => 
-			{	
-				if (img.Visibility == ViewStates.Gone)
-				{
-					img.Visibility = ViewStates.Visible;
-					coordinates.Visibility = ViewStates.Visible;
-					address.Visibility = ViewStates.Visible;
-					comment.Visibility = ViewStates.Visible;
-				}
-				else
-				{
-					img.Visibility = ViewStates.Gone;
-					coordinates.Visibility = ViewStates.Gone;
-					address.Visibility = ViewStates.Gone;
-					comment.Visibility = ViewStates.Gone;
-				}
-			};
-			layot.AddView (problemTXT);
-			layot.AddView (coordinates);
-			layot.AddView (address);
-			layot.AddView (comment);
-			layot.AddView (img);
+			linearLayout.AddView (img);
 		}
+
+		void CreateTextView (string text)
+		{
+			TextView newTextview = new TextView (this);
+			newTextview.Text = text;
+			newTextview.SetTextColor (Color.Blue);
+			newTextview.SetTextSize (Android.Util.ComplexUnitType.Pt, 10.0f);
+			linearLayout.AddView (newTextview);
+		}
+
+		public async void GetFilesFromParse ()
+		{
+			ParseQuery<ParseObject> query = ParseObject.GetQuery ("problem");
+			IEnumerable<ParseObject> relatedObjects = await query.FindAsync ();
+
+			foreach (ParseObject problem in relatedObjects) {
+				descriptionList.Add (problem.Get<string> ("description"));
+				locationList.Add (problem.Get<ParseGeoPoint> ("coordinates"));
+				parseFiles.Add (problem.Get<ParseFile> ("image"));
+				addressList.Add (problem.Get<string> ("address"));
+				commentList.Add (problem.Get<string> ("comment"));
+				++count;
+			}
+
+			pagesCount = (count / maxCountInView);
+			if (count % maxCountInView != 0) {
+				++pagesCount;
+			}
+			nextPage.Enabled = true;
+			previousPage.Enabled = true;
+
+			DownloadNextPage ();
+
+		}
+
 		private int ConvertPixelsToDp(float pixelValue)
 		{
-			var dp = (int) ((pixelValue)/Resources.DisplayMetrics.Density);
+			var dp = (int)((pixelValue) / Resources.DisplayMetrics.Density);
 			return dp;
 		}
-
-
-		LinearLayout layot;
-		protected override void OnCreate (Bundle bundle)
-		{
-			base.OnCreate (bundle);
-			SetContentView (Resource.Layout.OnLoadedPhotosClickScreen);
-			layot = FindViewById<LinearLayout> (Resource.Id.linearLayout1);
-			Parse.ParseClient.Initialize("ZF2JYEfxIM7QyKVdOBn0AJEOUr1Mj5h1UMKsWqeC",
-				"CEkjpD569RxuYtIYcJ9SNLMDt6FfL76fjJ48Qe3z");
-			GetFiles ();
-		}
 	}
+
+
 }
+		
 
 
 
-
+/*
+ * 		*/
