@@ -30,8 +30,6 @@ namespace MyNewProject
 			base.OnCreate (savedInstanceState);
             SetContentView(Resource.Layout.StartScreen);
 
-			Intent intent = new Intent (this, typeof(MainActivity));
-
             Instanse = this;
 			RegisterService ();
 

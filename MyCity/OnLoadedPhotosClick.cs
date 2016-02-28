@@ -38,8 +38,6 @@ namespace MyNewProject
 		List<string> commentList = new List<string> ();
 		Button nextPage, previousPage;
 
-		ProgressDialog progress;
-
 		TextView pageNumber;
 
 		protected override void OnCreate (Bundle savedInstanceState)

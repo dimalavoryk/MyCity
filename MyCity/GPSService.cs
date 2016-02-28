@@ -95,7 +95,7 @@ namespace MyNewProject
 				}  
 			}
 			
-			catch (Exception ex)  
+			catch (Exception)  
 			{  
 				//_address = "Unable to determine the address.";  
 			}  
