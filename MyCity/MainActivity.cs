@@ -17,7 +17,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyNewProject
 {
-	[Activity (Label = "Головне меню", Icon = "@drawable/icon"/*, MainLauncher = true*/, ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]
+	[Activity (Label = "My City", Icon = "@drawable/icon", MainLauncher = true, ScreenOrientation =  Android.Content.PM.ScreenOrientation.Portrait)]
 	public class MainActivity : Activity
 	{
 		static public string type;
